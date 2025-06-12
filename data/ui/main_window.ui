@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <requires lib="gtk" version="4.0"/>
+  <requires lib="gtk" version="4.0" />
   <menu id="menu">
     <section>
       <item>
@@ -25,7 +25,7 @@
               <lookup name="docs">sidebar</lookup>
             </binding>
             <property name="sorter">
-              <object class="EnigmaDocSorter" id="sorter"/>
+              <object class="EnigmaDocSorter" id="sorter" />
             </property>
           </object>
         </property>
@@ -36,53 +36,57 @@
     <property name="default-width">800</property>
     <property name="default-height">600</property>
     <child>
-      <object class="GtkBox" id="main_box">
-        <property name="orientation">horizontal</property>
-        <child>
-          <object class="HeSideBar" id="sbox">
-            <property name="titlewidget">
-              <object class="GtkLabel">
-                <property name="label" translatable="yes">Open Files</property>
-                <property name="halign">start</property>
-                <style>
-                  <class name="view-title" />
-                </style>
-              </object>
-            </property>
-            <property name="has-margins">0</property>
-            <property name="show-back">0</property>
-            <property name="show-right-title-buttons">0</property>
-            <property name="width-request">230</property>
-            <child type="titlebar-menu">
-              <object class="GtkMenuButton" id="menu_button">
-                <property name="icon-name">open-menu-symbolic</property>
-                <property name="menu-model">menu</property>
-              </object>
-            </child>
+      <object class="GtkOverlay" id="about_overlay">
+        <property name="child">
+          <object class="GtkBox" id="main_box">
+            <property name="orientation">horizontal</property>
             <child>
-              <object class="HeOverlayButton" id="new_button">
-                <property name="tooltip-text" translatable="yes">New File</property>
-                <property name="icon">list-add-symbolic</property>
-                <property name="typeb">primary</property>
-                <signal name="clicked" handler="on_new_doc_requested"/>
+              <object class="HeSideBar" id="sbox">
+                <property name="titlewidget">
+                  <object class="GtkLabel">
+                    <property name="label" translatable="yes">Open Files</property>
+                    <property name="halign">start</property>
+                    <style>
+                      <class name="view-title" />
+                    </style>
+                  </object>
+                </property>
+                <property name="has-margins">0</property>
+                <property name="show-back">0</property>
+                <property name="show-right-title-buttons">0</property>
+                <property name="width-request">230</property>
+                <child type="titlebar-menu">
+                  <object class="GtkMenuButton" id="menu_button">
+                    <property name="icon-name">open-menu-symbolic</property>
+                    <property name="menu-model">menu</property>
+                  </object>
+                </child>
                 <child>
-                  <object class="GtkBox">
-                    <property name="orientation">vertical</property>
+                  <object class="HeOverlayButton" id="new_button">
+                    <property name="tooltip-text" translatable="yes">New File</property>
+                    <property name="icon">list-add-symbolic</property>
+                    <property name="typeb">primary</property>
+                    <signal name="clicked" handler="on_new_doc_requested" />
                     <child>
-                      <object class="GtkScrolledWindow" id="bscroller">
-                        <property name="hscrollbar-policy">never</property>
+                      <object class="GtkBox">
+                        <property name="orientation">vertical</property>
                         <child>
-                          <object class="EnigmaSidebar" id="sidebar">
-                            <signal name="new_doc_requested" handler="on_new_doc_requested"/>
-                            <binding name="docs">
-                              <lookup name="docs" type="EnigmaDocViewModel">
-                                <lookup name="view-model">EnigmaMainWindow</lookup>
-                              </lookup>
-                            </binding>
-                            <binding name="view-model">
-                              <lookup name="view-model">EnigmaMainWindow</lookup>
-                            </binding>
-                            <property name="ss">selection_model</property>
+                          <object class="GtkScrolledWindow" id="bscroller">
+                            <property name="hscrollbar-policy">never</property>
+                            <child>
+                              <object class="EnigmaSidebar" id="sidebar">
+                                <signal name="new_doc_requested" handler="on_new_doc_requested" />
+                                <binding name="docs">
+                                  <lookup name="docs" type="EnigmaDocViewModel">
+                                    <lookup name="view-model">EnigmaMainWindow</lookup>
+                                  </lookup>
+                                </binding>
+                                <binding name="view-model">
+                                  <lookup name="view-model">EnigmaMainWindow</lookup>
+                                </binding>
+                                <property name="ss">selection_model</property>
+                              </object>
+                            </child>
                           </object>
                         </child>
                       </object>
@@ -91,22 +95,22 @@
                 </child>
               </object>
             </child>
+            <child>
+              <object class="EnigmaContentView" id="doccontent">
+                <signal name="doc_update_requested" handler="on_doc_update_requested" />
+                <binding name="doc">
+                  <lookup name="selected-doc">sidebar</lookup>
+                </binding>
+                <binding name="vm">
+                  <lookup name="view-model">EnigmaMainWindow</lookup>
+                </binding>
+                <binding name="app">
+                  <lookup name="app">EnigmaMainWindow</lookup>
+                </binding>
+              </object>
+            </child>
           </object>
-        </child>
-        <child>
-          <object class="EnigmaContentView" id="doccontent">
-            <signal name="doc_update_requested" handler="on_doc_update_requested"/>
-            <binding name="doc">
-              <lookup name="selected-doc">sidebar</lookup>
-            </binding>
-            <binding name="vm">
-              <lookup name="view-model">EnigmaMainWindow</lookup>
-            </binding>
-            <binding name="app">
-              <lookup name="app">EnigmaMainWindow</lookup>
-            </binding>
-          </object>
-        </child>
+        </property>
       </object>
     </child>
   </template>

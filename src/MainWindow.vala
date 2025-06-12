@@ -1,22 +1,22 @@
 /*
-* Copyright (c) 2023 Fyra Labs
-*
-* This program is free software; you can redistribute it and/or
-* modify it under the terms of the GNU General Public
-* License as published by the Free Software Foundation; either
-* version 3 of the License, or (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-* General Public License for more details.
-*
-* You should have received a copy of the GNU General Public
-* License along with this program; if not, write to the
-* Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
-* Boston, MA 02110-1301 USA
-*
-*/
+ * Copyright (c) 2023 Fyra Labs
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301 USA
+ *
+ */
 namespace Enigma {
     [GtkTemplate (ui = "/com/fyralabs/Enigma/main_window.ui")]
     public class MainWindow : He.ApplicationWindow {
@@ -29,6 +29,8 @@ namespace Enigma {
         public unowned ContentView doccontent;
         [GtkChild]
         public unowned Gtk.MenuButton menu_button;
+        [GtkChild]
+        public unowned Gtk.Overlay about_overlay;
 
         public SimpleActionGroup actions { get; construct; }
         public const string ACTION_PREFIX = "win.";
@@ -38,14 +40,14 @@ namespace Enigma {
         public static Gee.MultiMap<string, string> action_accelerators = new Gee.HashMultiMap<string, string> ();
 
         private const GLib.ActionEntry[] ACTION_ENTRIES = {
-              { ACTION_ABOUT, action_about },
-              { ACTION_PREFS, action_prefs },
-              { ACTION_SAVE, action_save },
+            { ACTION_ABOUT, action_about },
+            { ACTION_PREFS, action_prefs },
+            { ACTION_SAVE, action_save },
         };
 
         // Custom
-        public MainWindow? mw {get; set;}
-        public Gtk.SelectionModel? ss {get; set;}
+        public MainWindow? mw { get; set; }
+        public Gtk.SelectionModel? ss { get; set; }
 
         // Etc
         public DocViewModel view_model { get; construct; }
@@ -53,10 +55,10 @@ namespace Enigma {
         public He.Application app { get; construct; }
         public MainWindow (He.Application application, DocViewModel view_model) {
             GLib.Object (
-                application: application,
-                app: application,
-                view_model: view_model,
-                icon_name: Config.APP_ID
+                         application : application,
+                         app : application,
+                         view_model: view_model,
+                         icon_name: Config.APP_ID
             );
         }
 
@@ -77,7 +79,7 @@ namespace Enigma {
 
                 app.set_accels_for_action (ACTION_PREFIX + action, accels_array);
             }
-            app.set_accels_for_action ("app.quit", {"<Ctrl>q"});
+            app.set_accels_for_action ("app.quit", { "<Ctrl>q" });
 
             var theme = Gtk.IconTheme.get_for_display (Gdk.Display.get_default ());
             theme.add_resource_path ("/com/fyralabs/Enigma/");
@@ -103,22 +105,23 @@ namespace Enigma {
         }
 
         public void action_about () {
-             var about = new He.AboutWindow (
-                 this,
-                 "Enigma" + Config.NAME_SUFFIX,
-                 Config.APP_ID,
-                 Config.VERSION,
-                 Config.APP_ID,
-                 "https://github.com/tau-OS/enigma/tree/main/po",
-                 "https://github.com/tau-OS/enigma/issues",
-                 "catalogue://com.fyralabs.Enigma",
-                 {},
-                 {"Fyra Labs"},
-                 2023,
-                 He.AboutWindow.Licenses.GPLV3,
-                 He.Colors.BLUE
-             );
-             about.present ();
+            var about = new He.AboutWindow (
+                                            this,
+                                            "Enigma" + Config.NAME_SUFFIX,
+                                            Config.APP_ID,
+                                            Config.VERSION,
+                                            Config.APP_ID,
+                                            "https://github.com/tau-OS/enigma/tree/main/po",
+                                            "https://github.com/tau-OS/enigma/issues",
+                                            "catalogue://com.fyralabs.Enigma",
+                                            {},
+                                            { "Fyra Labs" },
+                                            2023,
+                                            He.AboutWindow.Licenses.GPLV3,
+                                            He.Colors.BLUE
+            );
+            about_overlay.add_overlay (about);
+            about.present ();
         }
 
         public void action_prefs () {
@@ -126,6 +129,7 @@ namespace Enigma {
             settings.parent = this;
             settings.present ();
         }
+
         public void action_save () {
             doccontent.save.begin ();
         }

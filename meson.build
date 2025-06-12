@@ -1,12 +1,10 @@
-project('com.fyralabs.Enigma', 'vala',
-        version: '0.1.0',
-        meson_version: '>= 0.50.0'
-)
+project('com.fyralabs.Enigma', 'vala', version: '0.1.0', meson_version: '>= 0.57.0')
 
 gnome = import('gnome')
 i18n = import('i18n')
 
-add_project_arguments([
+add_project_arguments(
+  [
     '--target-glib=2.68',
     '--gresourcesdir', meson.current_build_dir() / 'data',
   ],
@@ -33,8 +31,9 @@ config_h_dir = include_directories('.')
 
 add_project_arguments(
   '-include', 'config.h',
+  '-w',
   '-DGETTEXT_PACKAGE="@0@"'.format(app_id),
-  language: 'c'
+  language: 'c',
 )
 
 subdir('data')
@@ -68,7 +67,7 @@ dependencies = [
   dependency('gmodule-2.0'),
   dependency('gtksourceview-5'),
   dependency('json-glib-1.0'),
-  meson.get_compiler('c').find_library('m', required: true)
+  meson.get_compiler('c').find_library('m', required: true),
 ]
 
 executable(
@@ -77,7 +76,7 @@ executable(
   asresources,
   dependencies: dependencies,
   vala_args: [meson.project_source_root() + '/src/config.vapi'],
-  install : true
+  install: true,
 )
 
 subdir('po')
@@ -85,5 +84,5 @@ subdir('po')
 gnome.post_install(
   glib_compile_schemas: true,
   gtk_update_icon_cache: true,
-  update_desktop_database: true
+  update_desktop_database: true,
 )
